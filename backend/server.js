@@ -1,0 +1,63 @@
+import express from "express";
+import cors from "cors";
+import multer from "multer";
+import xlsx from "xlsx";
+import fs from "fs";
+import { spawn } from "child_process";
+import path from "path";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// ✅ Proper Multer setup — keeps the original file extension
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(process.cwd(), "uploads"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // adds .csv or .xlsx
+  },
+});
+
+const upload = multer({ storage });
+
+// ✅ Upload route
+app.post("/upload", upload.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+  const filePath = req.file.path;
+  console.log("📂 File received:", filePath);
+
+  // ✅ Run the Python model
+  const pythonProcess = spawn("python", ["model/run_model.py", filePath]);
+
+  let pythonData = "";
+  let pythonError = "";
+
+  pythonProcess.stdout.on("data", (data) => {
+    pythonData += data.toString();
+  });
+
+  pythonProcess.stderr.on("data", (data) => {
+    pythonError += data.toString();
+  });
+
+  pythonProcess.on("close", (code) => {
+    if (pythonError) {
+      console.error("❌ Python script failed:", pythonError);
+      return res.status(500).json({ error: pythonError });
+    }
+
+    try {
+      const parsed = JSON.parse(pythonData);
+      res.json(parsed);
+    } catch (e) {
+      console.error("❌ Failed to parse Python output:", pythonData);
+      res.status(500).json({ error: "Invalid Python output" });
+    }
+  });
+});
+
+// ✅ Start server
+app.listen(5000, () => console.log("🚀 Server running on http://localhost:5000"));
