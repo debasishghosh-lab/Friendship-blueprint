@@ -10,13 +10,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Proper Multer setup — keeps the original file extension
+// ✅ Multer setup — stores uploaded files in /uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(process.cwd(), "uploads"));
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // adds .csv or .xlsx
+    cb(null, Date.now() + path.extname(file.originalname)); // keeps file extension (.csv/.xlsx)
   },
 });
 
@@ -59,5 +59,17 @@ app.post("/upload", upload.single("file"), (req, res) => {
   });
 });
 
+// ✅ Serve React frontend (dist folder)
+app.use(express.static(path.join(process.cwd(), "dist")));
+
+// ✅ Catch-all route (regex form required in Express 5)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(process.cwd(), "dist", "index.html"));
+});
+
 // ✅ Start server
-app.listen(5000, () => console.log("🚀 Server running on http://localhost:5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
+
