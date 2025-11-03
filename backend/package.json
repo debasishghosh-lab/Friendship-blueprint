@@ -1,17 +1,17 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend server for file upload and ML model execution",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Debasish Ghosh",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "multer": "^2.0.2",
