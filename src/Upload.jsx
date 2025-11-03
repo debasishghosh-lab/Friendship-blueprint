@@ -141,13 +141,14 @@ function Upload() {
               </div>
 
               {/* Upload Button */}
+              {/* Upload Button */}
               <button
                 onClick={handleUpload}
                 disabled={isProcessing}
-                className={`w-full px-6 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300 ${
+                className={`w-full text-white px-6 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300 ${
                   isProcessing
                     ? 'bg-blue-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg transform hover:-translate-y-0.5'
+                    : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg transform hover:-translate-y-0.5'
                 }`}
               >
                 {isProcessing ? (
@@ -178,7 +179,6 @@ function Upload() {
                   'Upload and Process'
                 )}
               </button>
-
               {/* Helper Text */}
               <p className="mt-6 text-center text-sm text-slate-500">
                 Your data will be processed securely and used only for clustering analysis
