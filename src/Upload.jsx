@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Upload() {
   const [file, setFile] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
   const handleUpload = async () => {
@@ -15,6 +16,7 @@ function Upload() {
     const formData = new FormData();
     formData.append("file", file);
 
+    setIsProcessing(true);
     try {
      const response = await axios.post(
         "https://friendship-blueprint-ef6y.onrender.com/upload",
@@ -32,6 +34,8 @@ function Upload() {
     } catch (error) {
       console.error("❌ Upload error:", error);
       alert("Upload failed. Check console for details.");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -139,9 +143,40 @@ function Upload() {
               {/* Upload Button */}
               <button
                 onClick={handleUpload}
-                className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                disabled={isProcessing}
+                className={`w-full px-6 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300 ${
+                  isProcessing
+                    ? 'bg-blue-400 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg transform hover:-translate-y-0.5'
+                }`}
               >
-                Upload and Process
+                {isProcessing ? (
+                  <span className="flex items-center justify-center gap-3">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Processing...</span>
+                  </span>
+                ) : (
+                  'Upload and Process'
+                )}
               </button>
 
               {/* Helper Text */}
