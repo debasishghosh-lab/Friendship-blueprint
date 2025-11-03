@@ -11,8 +11,8 @@ lerna-debug.log*
 node_modules/
 backend/node_modules/
 
-# Build folders
-dist/
+# Build folders (ignore frontend dev build only, keep backend/dist for deployment)
+frontend/dist/
 build/
 
 # Environment files
@@ -47,4 +47,3 @@ backend/model/__pycache__/
 
 # Vite cache
 .vite/
-
